@@ -54,13 +54,18 @@ export async function initDb(catalog: {
   await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto;`);
   await pool.query(SCHEMA_SQL);
 
-  const count = await pool.query("SELECT COUNT(*)::int AS n FROM sefirot");
-  if (count.rows[0].n > 0) return;
-
   for (const [index, sefira] of catalog.entries()) {
-    const inserted = await pool.query(
+    const upserted = await pool.query(
       `INSERT INTO sefirot (slug, name, planet, virtue, vice, color, summary, sort_order)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+       ON CONFLICT (slug) DO UPDATE SET
+         name = EXCLUDED.name,
+         planet = EXCLUDED.planet,
+         virtue = EXCLUDED.virtue,
+         vice = EXCLUDED.vice,
+         color = EXCLUDED.color,
+         summary = EXCLUDED.summary,
+         sort_order = EXCLUDED.sort_order
        RETURNING id`,
       [
         sefira.slug,
@@ -73,12 +78,36 @@ export async function initDb(catalog: {
         index
       ]
     );
-    const sefiraId = inserted.rows[0].id as number;
+    const sefiraId = upserted.rows[0].id as number;
+
+    const existing = await pool.query(
+      `SELECT id, sort_order FROM questions WHERE sefira_id = $1 ORDER BY sort_order, id`,
+      [sefiraId]
+    );
+
     for (const [qIndex, prompt] of sefira.questions.entries()) {
-      await pool.query(
-        `INSERT INTO questions (sefira_id, prompt, sort_order) VALUES ($1,$2,$3)`,
-        [sefiraId, prompt, qIndex]
-      );
+      const row = existing.rows[qIndex] as { id: number; sort_order: number } | undefined;
+      if (row) {
+        await pool.query(`UPDATE questions SET prompt = $1, sort_order = $2 WHERE id = $3`, [
+          prompt,
+          qIndex,
+          row.id
+        ]);
+      } else {
+        await pool.query(`INSERT INTO questions (sefira_id, prompt, sort_order) VALUES ($1,$2,$3)`, [
+          sefiraId,
+          prompt,
+          qIndex
+        ]);
+      }
+    }
+
+    if (existing.rows.length > sefira.questions.length) {
+      const keepIds = existing.rows.slice(0, sefira.questions.length).map((r) => r.id as number);
+      await pool.query(`DELETE FROM questions WHERE sefira_id = $1 AND NOT (id = ANY($2::int[]))`, [
+        sefiraId,
+        keepIds
+      ]);
     }
   }
 }

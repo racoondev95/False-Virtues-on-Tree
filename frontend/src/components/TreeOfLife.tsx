@@ -128,8 +128,8 @@ export default function TreeOfLife({ result }: Props) {
         </div>
         <p>{selected.summary}</p>
         <p>
-          Probleme bifate: <strong style={{ color: "#e8c547" }}>{selected.problemCount}</strong>
-          {selected.checked.length > 0 ? " · apasă o problemă pentru soluție" : ""}
+          Afirmații bifate: <strong style={{ color: "#e8c547" }}>{selected.problemCount}</strong>
+          {selected.checked.length > 0 ? " · apasă una pentru o invitație de soluție" : ""}
         </p>
         {selected.checked.length > 0 ? (
           <div className="popup-list">
@@ -147,7 +147,7 @@ export default function TreeOfLife({ result }: Props) {
             ))}
           </div>
         ) : (
-          <p>Nicio problemă bifată la această sefiră.</p>
+          <p>Nicio afirmație bifată la această sefiră — e în regulă.</p>
         )}
       </div>
 
@@ -156,7 +156,7 @@ export default function TreeOfLife({ result }: Props) {
           <button className="popup-close" type="button" onClick={() => setSolutionId(null)} aria-label="Închide soluția">
             ×
           </button>
-          <div className="kicker">Soluție</div>
+          <div className="kicker">Invitație</div>
           <h3 className="serif">Virtutea reală</h3>
           <p className="problem-echo">{activeProblem.prompt}</p>
           <p>{solutionFor(activeProblem.prompt)}</p>
@@ -205,7 +205,7 @@ export default function TreeOfLife({ result }: Props) {
                 onFocus={() => openSefira(node.slug, true)}
                 tabIndex={0}
                 role="button"
-                aria-label={`${data.name}: ${count} probleme bifate`}
+                aria-label={`${data.name}: ${count} afirmații bifate`}
               >
                 <circle cx={node.x} cy={node.y} r="46" fill="transparent" />
                 <circle cx={node.x} cy={node.y} r="42" fill="url(#glow)" />

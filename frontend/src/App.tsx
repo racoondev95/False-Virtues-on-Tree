@@ -148,7 +148,7 @@ export default function App() {
               Arborele Vieții
             </h2>
             <p className="lede">
-              Cifra din fiecare sefiră este numărul de probleme bifate. Deschide o sefiră (hover pe desktop, tap pe
+              Cifra din fiecare sefiră arată câte afirmații ai recunoscut. Deschide o sefiră (hover pe desktop, tap pe
               mobil), apoi apasă o problemă pentru soluția ei.
             </p>
             <TreeOfLife result={result} />
