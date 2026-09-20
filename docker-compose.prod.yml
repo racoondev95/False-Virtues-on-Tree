@@ -1,0 +1,73 @@
+name: chestionar-kabbalah
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kabbalah}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?lipsește POSTGRES_PASSWORD din .env}
+      POSTGRES_DB: ${POSTGRES_DB:-kabbalah}
+    volumes:
+      - kabbalah_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kabbalah} -d ${POSTGRES_DB:-kabbalah}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kabbalah-net
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://${POSTGRES_USER:-kabbalah}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-kabbalah}
+      CORS_ORIGIN: ${PUBLIC_URL:-http://localhost}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kabbalah-net
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - api
+    networks:
+      - kabbalah-net
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+    networks:
+      - kabbalah-net
+
+volumes:
+  kabbalah_pgdata:
+  caddy_data:
+  caddy_config:
+
+networks:
+  kabbalah-net:
+    name: kabbalah-net

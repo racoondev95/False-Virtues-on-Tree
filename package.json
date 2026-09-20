@@ -1,0 +1,20 @@
+{
+  "name": "chestionar-kabbalah",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Chestionar Falsele Virtuți ale Arborelui Vieții",
+  "workspaces": [
+    "frontend",
+    "api"
+  ],
+  "scripts": {
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose stop db",
+    "dev": "npm run db:up && npm run dev --workspace=api",
+    "dev:app": "npm run dev --workspace=frontend",
+    "deploy": "docker compose up --build",
+    "deploy:prod": "docker compose -f docker-compose.prod.yml up -d --build",
+    "prod:logs": "docker compose -f docker-compose.prod.yml logs -f --tail=100",
+    "prod:down": "docker compose -f docker-compose.prod.yml down"
+  }
+}

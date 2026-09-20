@@ -1,0 +1,63 @@
+name: chestionar-kabbalah
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kabbalah-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kabbalah
+      POSTGRES_PASSWORD: kabbalah
+      POSTGRES_DB: kabbalah
+    ports:
+      - "5434:5432"
+    volumes:
+      - kabbalah_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kabbalah -d kabbalah"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - kabbalah-net
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: kabbalah-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://kabbalah:kabbalah@db:5432/kabbalah
+      CORS_ORIGIN: http://localhost:8080,http://localhost:5173
+    ports:
+      - "4002:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - kabbalah-net
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: kabbalah-web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - kabbalah-net
+
+volumes:
+  kabbalah_pgdata:
+
+networks:
+  kabbalah-net:
+    name: kabbalah-net
