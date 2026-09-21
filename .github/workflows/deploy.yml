@@ -1,0 +1,57 @@
+name: Deploy pe AWS EC2
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: /home/ubuntu/chestionar-kabbalah
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pregătesc cheia SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sincronizez fișierele pe instanță
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o ServerAliveInterval=30 \
+            "${EC2_USER}@${EC2_HOST}" "mkdir -p '${APP_DIR}'"
+          rsync -az --delete \
+            --exclude '.env' \
+            --exclude '.git/' \
+            --exclude 'node_modules/' \
+            --exclude '**/node_modules/' \
+            --exclude 'api/dist/' \
+            --exclude 'frontend/dist/' \
+            -e "ssh -i ~/.ssh/deploy_key -o ServerAliveInterval=30" \
+            ./ "${EC2_USER}@${EC2_HOST}:${APP_DIR}/"
+
+      - name: Rebuild, migrări (initDb) și restart
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -o ServerAliveInterval=30 \
+            -o ServerAliveCountMax=40 \
+            "${EC2_USER}@${EC2_HOST}" \
+            "chmod +x '${APP_DIR}/deploy/update.sh' && bash '${APP_DIR}/deploy/update.sh'"
