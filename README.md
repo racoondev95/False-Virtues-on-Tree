@@ -2,7 +2,11 @@
 
 Aplicație pentru **Falsele Virtuți ale Arborelui Vieții**: formular pe sefirot, salvare în Postgres și vizualizare pe Arborele Vieții.
 
-## Servicii Docker
+## Texte (întrebări & soluții)
+
+Sursa unică: `shared/texts.ts` — stil **cheie → { question, solution }** (`K-1`, `C-2`, `He-3` …).
+
+După editare, restart/rebuild API + frontend. Schema din DB se actualizează la start (`initDb`).
 
 Containerele sunt izolate de alte proiecte: rețea `kabbalah-net`, volum `kabbalah_pgdata`, Postgres pe portul **5434**.
 

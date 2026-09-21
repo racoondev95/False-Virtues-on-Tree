@@ -1,6 +1,10 @@
 Falsele Virtuți — Monitorizare întrebări & soluții
 ============================================================
 
+Sursa de adevăr în cod: `shared/texts.ts` (chei K-1, C-2, He-3 …).
+Editezi acolo; API + frontend citesc din același fișier.
+Acest document e o oglindă umană a acelorași chei.
+
 Prefixe: K=Kether | C=Chokmah | B=Binah | He=Hessed | G=Ghebura | T=Tiferet | N=Netah | Ho=Hod | Y=Yesod | M=Malkut
 
 
@@ -28,7 +32,7 @@ K-3. ÎNTREBARE
 Când apar conflicte interioare, tind să mă identific cu o singură parte și să le țin pe celelalte la distanță.
 
 K-3. SOLUȚIE
-Numește ambele părți și caută ce încearcă fiecare să protejeze, înainte să alegi un tabăr. Conflictul interior e un semn că unitatea încă se așază — nu o dovadă că trebuie să respingi o parte din tine.
+Numește ambele părți și caută ce încearcă fiecare să protejeze, înainte să alegi o tabără. Conflictul interior e un semn că unitatea încă se așază — nu o dovadă că trebuie să respingi o parte din tine.
 
 ----------------------------------------
 
@@ -65,12 +69,12 @@ C-3. ÎNTREBARE
 Dacă nimeni nu ar ști ce fac, scopul meu ar părea mai puțin important.
 
 C-3. SOLUȚIE
-Exersează o practică sau un gest pe care nimeni nu îl vede. Dacă se golește fără martori, ești poate mai atașat de imagine decât de scop — și poți redistribui blând energia către ceea ce contează în tăcere.
+Exersează o practică sau un gest pe care nimeni nu îl vede. Dacă se golește fără martori, poate există un atașament față de imagine mai mare decât față de scop — și poți redistribui blând energia către ceea ce contează în tăcere.
 
 ----------------------------------------
 
 C-4. ÎNTREBARE
-Mă țin de o direcție și din grija de a nu admite că am investit mult într-o cale care nu mai potrivește.
+Mă țin de o direcție și din grija de a nu admite că am investit mult într-o cale care nu mai se potrivește.
 
 C-4. SOLUȚIE
 Când spui „nu pot renunța”, distinge blând voința de grija de a admite o investiție greșită. Devoțiunea autentică poate continua la greu și poate, cu demnitate, să se oprească când realitatea cere altă formă.
@@ -148,7 +152,7 @@ Observă o informație fără să o transformi imediat într-o concluzie. Permit
 
 
 ############################################################
-He — Hessed (Obediență / Aliniere / viciu: Ipocrizia / Mândria)
+He — Hessed (Obediență / Aliniere / viciu: Ipocrizie / Mândrie)
 ############################################################
 
 He-1. ÎNTREBARE
@@ -270,7 +274,7 @@ A spune „am greșit” nu micșorează forța. Dimpotrivă, arată că imagine
 
 
 ############################################################
-T — Tiferet (Devotamentul / viciu: Egoism)
+T — Tiferet (Devotament / viciu: Egoism)
 ############################################################
 
 T-1. ÎNTREBARE
@@ -323,7 +327,7 @@ Păstrează capacitatea de a spune „m-am înșelat”. Devotamentul autentic n
 
 
 ############################################################
-N — Netah (Netzach) (Dărnicia / viciu: Impuritate)
+N — Netah (Netzach) (Dărnicie / viciu: Impuritate)
 ############################################################
 
 N-1. ÎNTREBARE
@@ -399,7 +403,7 @@ Ho-2. ÎNTREBARE
 Selectez sau omit detalii ca ceilalți să ajungă la concluzia pe care o simt potrivită.
 
 Ho-2. SOLUȚIE
-Nu folosi adevărul pentru a manipula. Întreabă dacă alegi informațiile pentru că sunt cele mai relevante sau pentru că vrei o anumită concluzie. Adevăruri parțiale pot produce o impresie falsă.
+Merită să verifici dacă alegi informațiile pentru că sunt cele mai relevante sau pentru că dorești o anumită concluzie. Adevăruri parțiale pot lăsa o impresie diferită de întreg.
 
 ----------------------------------------
 
@@ -445,7 +449,7 @@ A spune numai lucruri adevărate nu e suficient dacă intenția e să produci o 
 
 
 ############################################################
-Y — Yesod (Independența / viciu: Lenea)
+Y — Yesod (Independență / viciu: Lene)
 ############################################################
 
 Y-1. ÎNTREBARE
