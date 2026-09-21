@@ -22,11 +22,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Pregătesc cheia SSH
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/deploy_key
+          # tr -d '\r' repară cheile lipite din Windows (CRLF)
+          printf '%s\n' "$EC2_SSH" | tr -d '\r' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
 
       - name: Sincronizez fișierele pe instanță
         env:
