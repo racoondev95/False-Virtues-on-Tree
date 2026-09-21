@@ -23,11 +23,17 @@ jobs:
 
       - name: Pregătesc cheia SSH
         env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          # Secretul trebuie să conțină cheia PRIVATĂ encodată base64 (un singur rând).
+          # Pe Windows: [Convert]::ToBase64String([IO.File]::ReadAllBytes("kabbalah-ec2-deploy"))
+          EC2_SSH_KEY_B64: ${{ secrets.EC2_SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "$EC2_SSH_KEY" | tr -d '\r' > ~/.ssh/deploy_key
+          if [ -z "$EC2_SSH_KEY_B64" ]; then
+            echo "Secretul EC2_SSH_KEY e gol."
+            exit 1
+          fi
+          echo "$EC2_SSH_KEY_B64" | tr -d '\r\n ' | base64 -d > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
           ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
