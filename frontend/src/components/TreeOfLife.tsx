@@ -147,7 +147,7 @@ export default function TreeOfLife({ result }: Props) {
             ))}
           </div>
         ) : (
-          <p>Nicio afirmație bifată la această sefiră — e în regulă.</p>
+          <p>Nicio afirmație bifată la această sefiră — e în regulă. </p>
         )}
       </div>
 
