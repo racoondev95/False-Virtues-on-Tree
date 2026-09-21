@@ -3,7 +3,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/
 COPY api/package.json ./api/
+COPY shared/package.json ./shared/
 RUN npm ci
+COPY shared ./shared
 COPY api ./api
 RUN npm run build -w kabbalah-api
 
@@ -13,8 +15,9 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/
 COPY api/package.json ./api/
+COPY shared/package.json ./shared/
 RUN npm ci --omit=dev -w kabbalah-api
 COPY --from=build /app/api/dist ./api/dist
 WORKDIR /app/api
 EXPOSE 4000
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/api/src/index.js"]

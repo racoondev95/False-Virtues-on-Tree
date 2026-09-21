@@ -3,7 +3,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 COPY frontend/package.json ./frontend/
 COPY api/package.json ./api/
+COPY shared/package.json ./shared/
 RUN npm ci
+COPY shared ./shared
 COPY frontend ./frontend
 ARG VITE_API_URL=/api
 ENV VITE_API_URL=$VITE_API_URL

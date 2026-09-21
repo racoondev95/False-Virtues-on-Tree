@@ -5,7 +5,8 @@
   "description": "Chestionar Falsele Virtuți ale Arborelui Vieții",
   "workspaces": [
     "frontend",
-    "api"
+    "api",
+    "shared"
   ],
   "scripts": {
     "db:up": "docker compose up -d db",
