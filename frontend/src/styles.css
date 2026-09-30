@@ -538,6 +538,141 @@ a.ghost-btn.cta-link:hover {
   }
 }
 
+.identity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.identity-grid .name-input {
+  min-width: 0;
+  width: 100%;
+}
+
+.identity-note,
+.muted-copy {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.identity-note {
+  margin: 14px 0 0;
+}
+
+.identity-line {
+  color: var(--gold);
+  margin: -6px 0 8px;
+}
+
+.pdf-row {
+  margin: 0 0 14px;
+}
+
+.pdf-row .gold-btn {
+  width: 100%;
+}
+
+.content-wide {
+  max-width: 1180px;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 18px;
+}
+
+.admin-search {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 760px;
+}
+
+.admin-table th,
+.admin-table td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.admin-table th {
+  color: var(--gold);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-table tr.active {
+  background: rgba(232, 197, 71, 0.08);
+}
+
+.table-btn {
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.admin-detail {
+  margin-top: 22px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.admin-sefira {
+  margin-top: 18px;
+}
+
+.admin-sefira h3 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.admin-sefira p,
+.admin-answer p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.admin-answer {
+  margin: 10px 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.admin-answer strong {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+@media (max-width: 760px) {
+  .identity-grid,
+  .admin-actions {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .admin-actions .gold-btn,
+  .admin-actions .ghost-btn {
+    width: 100%;
+  }
+}
+
 @media (max-width: 420px) {
   .title {
     font-size: 28px;
