@@ -5,7 +5,8 @@ import LightRays from "./components/react-bits/LightRays";
 import SplitText from "./components/react-bits/SplitText";
 import SpotlightCard from "./components/react-bits/SpotlightCard";
 import TreeOfLife from "./components/TreeOfLife";
-import { getQuestionnaire, localQuestionnaire, submitResponse, type Questionnaire, type ResultPayload } from "./lib/api";
+import { getQuestionnaire, localQuestionnaire, submitResponse, type ParticipantInput, type Questionnaire, type ResultPayload } from "./lib/api";
+import { downloadResultPdf } from "./lib/pdf";
 
 type Stage = "intro" | "form" | "result";
 
@@ -13,7 +14,8 @@ export default function App() {
   const [data, setData] = useState<Questionnaire>(() => localQuestionnaire());
   const [error, setError] = useState("");
   const [stage, setStage] = useState<Stage>("intro");
-  const [name, setName] = useState("");
+  const [identity, setIdentity] = useState<ParticipantInput>({ lastName: "", firstName: "", email: "", phone: "" });
+  const [pdfBusy, setPdfBusy] = useState(false);
   const [step, setStep] = useState(0);
   const [checked, setChecked] = useState<Record<number, boolean>>({});
   const [result, setResult] = useState<ResultPayload | null>(null);
@@ -48,13 +50,54 @@ export default function App() {
     setSaving(true);
     setError("");
     try {
-      const payload = await submitResponse(data, name, answers);
+      const payload = await submitResponse(data, identity, answers);
       setResult(payload);
       setStage("result");
     } catch {
       setError("Nu am putut salva răspunsurile.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  function identityError() {
+    const lastName = identity.lastName.trim();
+    const firstName = identity.firstName.trim();
+    const email = identity.email.trim();
+    const phone = identity.phone.trim();
+    if (!lastName || !firstName || !email || !phone) {
+      return "Completează numele, prenumele, emailul și telefonul.";
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Emailul nu pare valid.";
+    if (phone.replace(/\D/g, "").length < 6) return "Telefonul nu pare valid.";
+    return "";
+  }
+
+  function begin() {
+    const message = identityError();
+    if (message) {
+      setError(message);
+      return;
+    }
+    setError("");
+    setStage("form");
+  }
+
+  function updateIdentity(field: keyof ParticipantInput, value: string) {
+    setIdentity((prev) => ({ ...prev, [field]: value }));
+    if (error) setError("");
+  }
+
+  async function savePdf() {
+    if (!result) return;
+    setPdfBusy(true);
+    setError("");
+    try {
+      await downloadResultPdf(result);
+    } catch {
+      setError("Nu am putut genera PDF-ul.");
+    } finally {
+      setPdfBusy(false);
     }
   }
 
@@ -73,14 +116,41 @@ export default function App() {
               <SplitText text={data.intro.title} className="title serif" />
               <FadeContent delay={0.2}>
                 <p className="lede">{data.intro.body}</p>
-                <div className="row">
+                <div className="identity-grid">
                   <input
                     className="name-input"
-                    placeholder="Nume (opțional)"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Nume"
+                    autoComplete="family-name"
+                    value={identity.lastName}
+                    onChange={(e) => updateIdentity("lastName", e.target.value)}
                   />
-                  <button className="gold-btn" type="button" onClick={() => setStage("form")}>
+                  <input
+                    className="name-input"
+                    placeholder="Prenume"
+                    autoComplete="given-name"
+                    value={identity.firstName}
+                    onChange={(e) => updateIdentity("firstName", e.target.value)}
+                  />
+                  <input
+                    className="name-input"
+                    type="email"
+                    placeholder="Email"
+                    autoComplete="email"
+                    value={identity.email}
+                    onChange={(e) => updateIdentity("email", e.target.value)}
+                  />
+                  <input
+                    className="name-input"
+                    type="tel"
+                    placeholder="Telefon"
+                    autoComplete="tel"
+                    value={identity.phone}
+                    onChange={(e) => updateIdentity("phone", e.target.value)}
+                  />
+                </div>
+                <p className="identity-note">Aceste date apar pe PDF-ul rezultatului și se salvează împreună cu răspunsurile.</p>
+                <div className="row">
+                  <button className="gold-btn" type="button" onClick={begin}>
                     Începe chestionarul
                   </button>
                 </div>
@@ -147,6 +217,9 @@ export default function App() {
             <h2 className="serif" style={{ fontSize: 44, marginTop: 0 }}>
               Arborele Vieții
             </h2>
+            <p className="identity-line">
+              {result.lastName} {result.firstName} · {result.email} · {result.phone}
+            </p>
             <p className="lede">
               Cifra din fiecare sefiră arată câte afirmații ai recunoscut. Deschide o sefiră (hover pe desktop, tap pe
               mobil), apoi apasă o problemă pentru soluția ei.
@@ -156,6 +229,11 @@ export default function App() {
             <p className="disclaimer">
               Sfaturile de aici sunt orientative și nu reprezintă o consiliere calificată, adaptabilă oricărei situații.
             </p>
+            <div className="pdf-row">
+              <button className="gold-btn" type="button" disabled={pdfBusy} onClick={() => void savePdf()}>
+                {pdfBusy ? "Se generează PDF-ul..." : "Salvează rezultatul ca PDF"}
+              </button>
+            </div>
             <div className="cta-row">
               <a className="gold-btn cta-link" href="https://institutulhermetic.ro" target="_blank" rel="noreferrer">
                 Vino pe Institutul Hermetic pentru o experiență mistică autentică

@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS questions (
 CREATE TABLE IF NOT EXISTS responses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   participant_name TEXT,
+  last_name TEXT,
+  first_name TEXT,
+  email TEXT,
+  phone TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -53,6 +57,10 @@ export async function initDb(catalog: {
 }[]) {
   await pool.query(`CREATE EXTENSION IF NOT EXISTS pgcrypto;`);
   await pool.query(SCHEMA_SQL);
+  await pool.query(`ALTER TABLE responses ADD COLUMN IF NOT EXISTS last_name TEXT;`);
+  await pool.query(`ALTER TABLE responses ADD COLUMN IF NOT EXISTS first_name TEXT;`);
+  await pool.query(`ALTER TABLE responses ADD COLUMN IF NOT EXISTS email TEXT;`);
+  await pool.query(`ALTER TABLE responses ADD COLUMN IF NOT EXISTS phone TEXT;`);
 
   for (const [index, sefira] of catalog.entries()) {
     const upserted = await pool.query(
